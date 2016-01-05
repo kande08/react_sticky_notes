@@ -28,7 +28,7 @@ var Note = React.createClass({
       data: {note: {name: this.state.noteName, description: this.state.noteDescription}},
       success: function(data) {
         var notes = self.state.notes;
-        notes.push({ name: data.name, description: data.description});
+        notes.push(data);
         self.setState({ notes: notes, showAdd: false, noteName: null, noteDescription: null });
       },
       error: function(data) {
@@ -51,21 +51,42 @@ var Note = React.createClass({
     }
   },
 
+  deleteNote: function(noteId) {
+    console.log(noteId)
+    var self = this;
+    $.ajax({
+      url: '/notes/' + noteId,
+      type: 'DELETE',
+      success: function(data) {
+        var notes = []
+        for(var i = 0; i < self.state.notes.length; i++){
+          if (self.state.notes[i].id != noteId){
+            notes.push(self.state.notes[i])
+          }
+        }
+        self.setState({ notes: notes });
+      },
+    })
+
+  },
+
   displayNotes: function() {
     var notes = [];
-    for(var i = 0; i < this.state.notes.length; i++){
+    var self = this;
+    this.state.notes.forEach(function(note) {
       notes.push(<li>
                   <div className="row container">
                     <div className="card green col s3">
                       <div className="card-content white-text">
-                        <h5>{this.state.notes[i].name}</h5>
+                        <h5>{note.name}</h5>
                         <br />
-                        {this.state.notes[i].description}
+                        {note.description}
+                        <a className='btn waves-effect' onClick={() => self.deleteNote(note.id)}>Delete</a>
                       </div>
                     </div>
                   </div>
                 </li>);
-    }
+    })
     return notes;
   },
 
