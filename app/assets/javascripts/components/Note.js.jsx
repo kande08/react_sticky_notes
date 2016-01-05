@@ -70,34 +70,40 @@ var Note = React.createClass({
 
   },
 
+  longerText: function(e) {
+    e.target.className="";
+  },
+
+  shorterText: function(e) {
+    e.target.className="truncate";
+  },
+
   displayNotes: function() {
     var notes = [];
     var self = this;
     this.state.notes.forEach(function(note) {
-      notes.push(<li>
-                  <div className="row container">
-                    <div className="card green col s3">
-                      <div className="card-content white-text">
-                        <h5>{note.name}</h5>
-                        <br />
-                        {note.description}
-                        <a className='btn waves-effect' onClick={() => self.deleteNote(note.id)}>Delete</a>
-                      </div>
+      notes.push(<div className="col s3">
+                  <div className="card-small green">
+                    <div className="card-content white-text">
+                      <h5>{note.name}</h5>
+                      <br />
+                      <p className="truncate" onMouseEnter={self.longerText} onMouseLeave={self.shorterText}>{note.description}</p>
+                      <a className='btn waves-effect' onClick={() => self.deleteNote(note.id)}>Delete</a>
                     </div>
                   </div>
-                </li>);
+                </div>);
     })
     return notes;
   },
 
   render: function() {
-    return(<div>
+    return(<div className="container">
             <a className='waves-effect waves-light btn' onClick={this.showAddForm}>Add Note</a>
             {this.addNoteForm()}
             <h1 className="center-align">Sticky Notes</h1>
             <div>
-              <div>
-                <ul>{this.displayNotes()}</ul>
+              <div className="row">
+                {this.displayNotes()}
               </div>
             </div>
           </div>);
