@@ -19,17 +19,20 @@ var Note = React.createClass({
     this.setState({ noteDescription: e.currentTarget.value });
   },
 
+  addNotePriority: function(e) {
+    this.setState({ notePriority: e.currentTarget.value })
+  },
   submitNote: function(e) {
     e.preventDefault();
     var self = this
     $.ajax({
       url: '/notes',
       type: 'POST',
-      data: {note: {name: this.state.noteName, description: this.state.noteDescription}},
+      data: {note: {name: this.state.noteName, description: this.state.noteDescription, priority: this.state.notePriority}},
       success: function(data) {
         var notes = self.state.notes;
         notes.push(data);
-        self.setState({ notes: notes, showAdd: false, noteName: null, noteDescription: null });
+        self.setState({ notes: notes, showAdd: false, noteName: null, noteDescription: null, notePriority: null });
       },
       error: function(data) {
         alert('submit note did not work');
@@ -44,6 +47,8 @@ var Note = React.createClass({
                 <div className='input-field'>
                   <input autoFocus='true' placeholder='Add Note' type='text' onChange={this.addNoteName} />
                   <textarea placeholder='Description' type='text' className='materialize-textarea' onChange={this.addNoteDescription} />
+                  <input placeholder='Priority' type='numberfield' onChange={this.addNotePriority} />
+                  <br /><br />
                   <button className='btn waves-effect' type='submit'>Save</button>
                 </div>
               </form>
@@ -81,12 +86,13 @@ var Note = React.createClass({
   displayNotes: function() {
     var notes = [];
     var self = this;
-    this.state.notes.forEach(function(note) {
+    self.state.notes.forEach(function(note) {
       notes.push(<div className="col s3">
                   <div className="card-small green">
                     <div className="card-content white-text">
                       <h5>{note.name}</h5>
                       <br />
+                      <p>{note.priority}</p>
                       <p className="truncate" onMouseEnter={self.longerText} onMouseLeave={self.shorterText}>{note.description}</p>
                       <a className='btn waves-effect' onClick={() => self.deleteNote(note.id)}>Delete</a>
                     </div>

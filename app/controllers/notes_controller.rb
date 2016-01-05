@@ -1,6 +1,7 @@
 class NotesController < ApplicationController
   def index
-    @notes = Note.all
+
+    @notes = Note.all.order(:priority)
   end
 
   def create
